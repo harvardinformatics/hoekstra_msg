@@ -76,7 +76,7 @@ if ( $params{'chroms'} eq 'all' ) {
 }
 else { @chroms = split( /,/, $params{'chroms'} ); }
 
-my $numcontigs = length(@chroms);
+my $numcontigs = scalar(@chroms);
 
 open( OUT, '>msg.chrLengths' )
   || die "ERROR (msgCluster): Can't create msg.chrLengths: $!\n";
@@ -103,17 +103,44 @@ print "num barcodes is $num_barcodes!\n";
 mkdir "msgOut.$$"   unless ( -d "msgOut.$$" );
 mkdir "msgError.$$" unless ( -d "msgError.$$" );
 
+my $src = '.';              #Source code directory
+my $outdir = 'hmm_data';    #Output directory
+my $Routdir = 'hmm_fit';    #HMM output directory
+
+
 ### Run jobs!
-open (BARCODE,$barcodes) || die "ERROR: Can't open $barcodes: $!\n";
+open (BARCODE,$params{'barcodes'}) || die "ERROR: Can't open " . $params{'barcodes'} . ": $!\n";
 foreach my $bc_line (<BARCODE>) {
     chomp $bc_line;
 
     # fastq_file = 'indiv' + ind[1] + '_' + ind[0]
     my @bc_bits = split(/\s+/,$bc_line);
     my $indiv = 'indiv' . $bc_bits[1] . '_' . $bc_bits[0];
-    print "\t$indiv\n";
+    my $sex = $bc_bits[3];
+    print "\t$indiv, $sex\n";
     
-    my $cmd="Rscript $src/fit-hmm.R -d $outdir -i $indiv -s $sex -o $Routdir -p $deltapar1 -q $deltapar2 -a $recRate -r $rfac -c $chroms -x $sexchroms -y $chroms2plot -z $priors -t $theta -g $gff_thresh_conf -u $one_site_per_contig -j $pepthresh"
+    my $cmdarr = [
+        "Rscript",
+        "$src/fit-hmm.R",
+        "-d",$outdir,
+        "-i",$indiv,
+        "-s",$sex,
+        "-o",$Routdir,
+        "-p",$params{'deltapar1'},
+        "-q",$params{'deltapar2'},
+        "-a",$params{'recRate'},
+        "-r",$params{'rfac'},
+        "-c",$params{'chroms'},
+        "-x",$params{'sexchroms'},
+        "-y",$params{'chroms2plot'},
+        "-z",$params{'priors'},
+        "-t",$params{'theta'},
+        "-g",$params{'gff_thresh_conf'},
+        "-u",$params{'one_site_per_contig'},
+        "-j",$params{'pepthresh'},
+     ];
+     print "Running hmm: " . join(' ', $cmdarr);
+     &Utils::system_call(join(' ',$cmdarr));
     
 }
 
