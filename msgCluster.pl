@@ -135,7 +135,7 @@ foreach my $bc_line (<BARCODE>) {
         "-y",$params{'chroms2plot'},
         "-z",$params{'priors'},
         "-t",$params{'theta'},
-        "-g",$params{'gff_thresh_conf'},
+        "-g",'X11',
         "-u",$params{'one_site_per_contig'},
         "-j",$params{'pepthresh'},
      );
@@ -146,9 +146,9 @@ foreach my $bc_line (<BARCODE>) {
 }
 
 
-&Utils::system_call(
-	"python msg/create_stats.py -i $params{'reads'} -b $params{'barcodes'}"
-);
+#&Utils::system_call(
+#	"python msg/create_stats.py -i $params{'reads'} -b $params{'barcodes'}"
+#);
 if ( $params{'pepthresh'} ne '' ) {
 	&Utils::system_call(
         "python msg/hmmprob_to_est.py -d hmm_fit -t $params{'pepthresh'} -o hmm_fits_ests.csv"
