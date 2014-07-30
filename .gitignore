@@ -7,3 +7,5 @@ lib64/
 share/
 samtools-0.1.7/
 tests/checksums.py
+.project
+.pydevproject
