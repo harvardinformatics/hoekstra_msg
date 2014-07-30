@@ -119,7 +119,7 @@ foreach my $bc_line (<BARCODE>) {
     my $sex = $bc_bits[3];
     print "\t$indiv, $sex\n";
     
-    my $cmdarr = (
+    my @cmdarr = (
         "Rscript",
         "$src/fit-hmm.R",
         "-d",$outdir,
@@ -139,9 +139,9 @@ foreach my $bc_line (<BARCODE>) {
         "-u",$params{'one_site_per_contig'},
         "-j",$params{'pepthresh'},
      );
-     print "Running hmm: " . join(' ', $cmdarr);
+     print "Running hmm: " . join(' ', @cmdarr);
      #my $cmd = join(' ',$cmdarr)
-     &Utils::system_call(join(' ',$cmdarr));
+     &Utils::system_call(join(' ',@cmdarr));
     
 }
 
