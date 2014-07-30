@@ -1,7 +1,9 @@
 #!/usr/bin/env Rscript
 
-## options(warn=2,error=recover);
-options(error=quote(q("yes")))
+options(warn=2,error=recover)
+options(show.error.locations=TRUE)
+## options(error=quote(q("yes")))
+
 
 args <- commandArgs()
 dollar0 <- substring(args[grep("^--file=", args)], 8)
