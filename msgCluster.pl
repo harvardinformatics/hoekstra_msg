@@ -121,7 +121,7 @@ foreach my $bc_line (<BARCODE>) {
     
     my @cmdarr = (
         "Rscript",
-        "$src/fit-hmm.R",
+        "msg/fit-hmm.R",
         "-d",$outdir,
         "-i",$indiv,
         "-s",$sex,
