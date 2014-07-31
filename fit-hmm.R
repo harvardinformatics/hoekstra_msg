@@ -293,7 +293,9 @@ for(indiv in indivs) {
       #theta <-1 ## quality value correction - defined by passed option
       eps<-paste('eps',seq(1,N,by=1),sep='')
       read<-paste('read',seq(1,N,by=1),sep='')
-      y <- data[,c(alleles,"reads","quals","par1ref"),drop=F]
+#      y <- data[,c(alleles,"reads","quals","par1ref"),drop=F]
+      y <- data[,c("reads","quals","par1ref"),drop=F]
+      
       y$selected_allele <- NA
       y[,eps]<-rep(0,N)
       y[,read]<-rep(5,N)
@@ -334,7 +336,7 @@ for(indiv in indivs) {
       Pr.z.given.y <- exp(hmm$logalpha + hmm$logbeta - hmm$LL)
       colnames(Pr.z.given.y) <- paste("Pr(", ancestries, "|y)")
       data <- cbind(data, Pr.z.given.y)
-      attr(data, "badpos") <- badpos
+      #attr(data, "badpos") <- badpos
       dataa[[contig]] <- data
       
       #Also save data as CSV for other programs

@@ -9,3 +9,5 @@ samtools-0.1.7/
 tests/checksums.py
 .project
 .pydevproject
+countalleles
+hmmprobs
