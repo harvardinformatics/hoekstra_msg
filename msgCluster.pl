@@ -118,6 +118,11 @@ foreach my $bc_line (<BARCODE>) {
     my $indiv = 'indiv' . $bc_bits[1] . '_' . $bc_bits[0];
     my $sex = $bc_bits[3];
     print "\t$indiv, $sex\n";
+    print "Checking $Routdir/$indiv\n";
+    if (! -d "$Routdir/$indiv"){
+        print "Making $Routdir/$indiv\n";
+        mkdir "$Routdir/$indiv";
+    }
     
     my @cmdarr = (
         "Rscript",
@@ -137,8 +142,15 @@ foreach my $bc_line (<BARCODE>) {
         "-t",$params{'theta'},
         "-g",'X11',
         "-u",$params{'one_site_per_contig'},
-        "-j",$params{'pepthresh'},
      );
+     push(@cmdarr,'-j');
+     push(@cmdarr,"null");
+#     if (defined $params{'pepthresh'}){
+#         push(@cmdarr,$params{'pepthresh'});
+#     }
+#     else {
+#         push(@cmdarr,"null");
+#     }
      print "Running hmm: " . join(' ', @cmdarr);
      #my $cmd = join(' ',$cmdarr)
      &Utils::system_call(join(' ',@cmdarr));
@@ -154,9 +166,9 @@ if ( $params{'pepthresh'} ne '' ) {
         "python msg/hmmprob_to_est.py -d hmm_fit -t $params{'pepthresh'} -o hmm_fits_ests.csv"
 	);
 }
-&Utils::system_call(
-    "Rscript msg/summaryPlots.R -c $params{'chroms'} -p $params{'chroms2plot'} -d hmm_fit -t $params{'thinfac'} -f $params{'difffac'} -b $params{'barcodes'} -n $params{'pnathresh'} > msgRun3.$$.out 2> msgRun3.$$.err"
-);
+#&Utils::system_call(
+#    "Rscript msg/summaryPlots.R -c $params{'chroms'} -p $params{'chroms2plot'} -d hmm_fit -t $params{'thinfac'} -f $params{'difffac'} -b $params{'barcodes'} -n $params{'pnathresh'} > msgRun3.$$.out 2> msgRun3.$$.err"
+#);
 &Utils::system_call(
     "perl msg/summary_mismatch.pl $params{'barcodes'} 0"
 );
