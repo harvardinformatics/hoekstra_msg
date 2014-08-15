@@ -148,9 +148,8 @@ make.genotypes <- function(alleles) {
 }
 
 read.data <- function(dir, indiv, contig) {
-    f <- sprintf("%s/%s/%s-%s.hmmdata", dir, indiv, indiv, contig)
+    f <- sprintf("%s/%s/%s_%s-hmmprob.csv", dir, indiv, indiv, contig)
     if (file.exists(f)==T) {
-		cat("Reading data from", f, "\n")
     	read.delim(f, header=TRUE, as.is=TRUE, na.strings="", quote="") ### need to eliminate quoting b/c of QVs
     } else { cat(paste("missing",f)); }
 }
@@ -428,6 +427,7 @@ tabf <- function(data) {
 contig.info <- function(pos, fac, lengths) {
     boundaries <- c(0, cumsum(lengths))
     nsites <- as.data.frame(table(fac))
+    
     contigs <- levels(fac)[match(names(lengths),levels(fac))]
     offsets <- rep(boundaries[-length(boundaries)], nsites[match(contigs,nsites$fac),]$Freq)
     #nsites <- table(fac)

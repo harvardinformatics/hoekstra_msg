@@ -16,6 +16,7 @@ opts <- getopts()
 ## result of this line:
 cat("Input parameters for summaryPlots.R\nopts <-") ; dput(opts)
 
+
 bc <- opts$b
 dir <- opts$d
 thinfac <- as.numeric(opts$t)

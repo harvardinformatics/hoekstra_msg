@@ -189,9 +189,9 @@ for(indiv in indivs) {
       }
       cat("\t", contig, sex, ploidy, "\n")
       
-      if (!file.exists(sprintf("%s/%s/%s-%s.hmmdata", dir, indiv, indiv, contig))) {
+      if (!file.exists(sprintf("%s/%s/%s_%s-hmmprob.csv", dir, indiv, indiv, contig))) {
         cat("MISSING file for CONTIG ", contig, " INDIV ", indiv, "\n")
-        cat(sprintf("%s/%s/%s-%s.hmmdata", dir, indiv, indiv, contig),"\n")
+        cat(sprintf("%s/%s/%s_%s-hmmprob.csv", dir, indiv, indiv, contig),"\n")
         next
       } 
       
@@ -260,7 +260,7 @@ for(indiv in indivs) {
         }
       }
       else {
-        r <- recrate / sum(contigLengths[,"length"])
+        r <- recrate / sum(as.numeric(contigLengths[,"length"]))
       }
       
       d <- c(NA, diff(data$pos))

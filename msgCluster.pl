@@ -3,6 +3,20 @@ use strict;
 use lib qw(./msg .);
 use Utils;
 
+# Check if all of the jobs are done
+sub jobs_done {
+   my %jobstates = %{@_[0]};
+   for my $jobid (keys %jobstates){
+       if ($jobstates{$jobid} =~ /PENDING|CONFIGURING|COMPLETING|RUNNING|RESIZING|SUSPENDED/){
+          my $result = `sacct -j $jobid -n --format State --parsable2`;
+          chomp $result;
+          $jobstates{$jobid} = $result;
+       }
+       # printf("%d %s\n",$jobid,$jobstates{$jobid});
+       return 0 if $jobstates{$jobid} =~ /PENDING|CONFIGURING|COMPLETING|RUNNING|RESIZING|SUSPENDED/;
+   }
+   return 1;
+}
 # Submit a job to the Slurm cluster
 sub submit {
     my (%params) = @_;
@@ -13,7 +27,7 @@ sub submit {
     delete $params{'cmd'};
     delete $params{'scriptname'};
     
-    my $scriptstr;
+    my $scriptstr = "#!/bin/bash\n";
     for my $k (keys(%params)) {
         $scriptstr .= sprintf("#SBATCH %s %s\n",$k,$params{$k});
     }
@@ -103,11 +117,11 @@ else { @chroms = split( /,/, $params{'chroms'} ); }
 
 my $numcontigs = scalar(@chroms);
 
-open( OUT, '>msg.chrLengths' )
-  || die "ERROR (msgCluster): Can't create msg.chrLengths: $!\n";
-print OUT "chr,length\n";
-foreach my $chr ( sort @chroms ) { print OUT "$chr,$par1_reads{$chr}\n"; }
-close OUT;
+#open( OUT, '>msg.chrLengths' )
+#  || die "ERROR (msgCluster): Can't create msg.chrLengths: $!\n";
+#print OUT "chr,length\n";
+#foreach my $chr ( sort @chroms ) { print OUT "$chr,$par1_reads{$chr}\n"; }
+#close OUT;
 
 ### Mapping & Plotting
 ### qsub array: one for each line in the barcode file
@@ -178,15 +192,18 @@ foreach my $bc_line (<BARCODE>) {
                             'scriptname' => "$indiv.sbatch",
                             '-n'    => 1, 
                             '-p'    => 'general',
-                            '-t'    => 1000,
-                            '--mem' => 1000,
+                            '-t'    => 12:00:00,
+                            '--mem' => 20000,
                             '--mail-type' => 'ALL',
                             '--mail-user' => 'akitzmiller@g.harvard.edu',
                         );
      push(@jobids,$jobid);
 }
+my %jobstates = map { $_ => 'PENDING' } @jobids;
 
-
+while (!jobs_done(\%jobstates)){
+   sleep 60;
+}
 #&Utils::system_call(
 #   "python msg/create_stats.py -i $params{'reads'} -b $params{'barcodes'}"
 #);
