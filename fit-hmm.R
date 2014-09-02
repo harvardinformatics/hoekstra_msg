@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
-#options(warn=2,error=recover)
-#options(show.error.locations=TRUE)
-options(error=quote(q("yes")))
+options(warn=2,error=recover)
+options(show.error.locations=TRUE)
+#options(error=quote(q("yes")))
 
 
 args <- commandArgs()
