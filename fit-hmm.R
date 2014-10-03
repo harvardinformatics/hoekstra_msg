@@ -35,7 +35,7 @@ cat("one.site.per.read has been set to", one.site.per.read, "\n")
 
 minCoverage <- 0;
 
-contigLengths <- read.csv("msg.chrLengths",header=T,sep=",",as.is=T);
+contigLengths <- read.csv("msg.chrLengths",header=T,sep=",",as.is=T,colClasses=c("chr"="character"));
 contigs <- sort(as.vector(contigLengths$chr))
 rownames(contigLengths) <- contigLengths$chr
 
