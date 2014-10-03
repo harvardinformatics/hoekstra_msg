@@ -88,7 +88,10 @@ Pr.y.given.z <- function(y, p, eps, n=50, ploidy=2, log=TRUE, C=FALSE, norm=FALS
 
         write.table(cbind(y, p1, p2, eps), file=tmpfile,
                     sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE)
-
+        
+        cat("Tempfile is ",tmpfile,"\n")
+        contents <- readChar(tmpfile,file.info(tmpfile)$size)
+        cat("Tempfile contents: \n",contents,"\n")
         pipa <- pipe(sprintf("%s/hmmprobs -t %d -p %d -n %d < %s", dir, L, ploidy, n, tmpfile))
         #pipa <- pipe(sprintf("%s/hmmprobs -t %d -e %f -p %d < %s", dir, L, eps, ploidy, tmpfile))
 		  on.exit({close(pipa) ; file.remove(tmpfile) })

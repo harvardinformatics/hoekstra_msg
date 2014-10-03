@@ -5,7 +5,7 @@ use Utils;
 
 # Check if all of the jobs are done
 sub jobs_done {
-   my %jobstates = %{@_[0]};
+   my %jobstates = %{$_[0]};
    for my $jobid (keys %jobstates){
        if ($jobstates{$jobid} =~ /PENDING|CONFIGURING|COMPLETING|RUNNING|RESIZING|SUSPENDED/){
           my $result = `sacct -j $jobid -n --format State --parsable2`;
@@ -161,7 +161,7 @@ foreach my $bc_line (<BARCODE>) {
     print "Checking $Routdir/$indiv\n";
     if (! -d "$Routdir/$indiv"){
         print "Making $Routdir/$indiv\n";
-        mkdir "$Routdir/$indiv";
+        `mkdir -p $Routdir/$indiv`;
     }
     
     my @cmdarr = (
@@ -192,7 +192,7 @@ foreach my $bc_line (<BARCODE>) {
                             'scriptname' => "$indiv.sbatch",
                             '-n'    => 1, 
                             '-p'    => 'general',
-                            '-t'    => 12:00:00,
+                            '-t'    => '12:00:00',
                             '--mem' => 20000,
                             '--mail-type' => 'ALL',
                             '--mail-user' => 'akitzmiller@g.harvard.edu',
